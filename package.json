@@ -16,21 +16,16 @@
   },
   "dependencies": {
     "ajv": "4.9.2",
-    "async": "^2.1.4",
     "core-util-is": "^1.0.1",
     "hoek": "^4.1.0",
-    "joi": "^10.0.5",
     "jpi-swaggerize-routes": "file:///Users/guest/Documents/dev/jpi/jpi-swaggerize-routes",
     "js-yaml": "^3.2.6",
-    "json-schema-ref-parser": "3.1.2",
-    "ratify": "file:///Users/guest/Documents/dev/jpi/jpi-ratify",
-    "swaggerize-routes": "file:///Users/guest/Documents/dev/jpi/jpi-swaggerize-routes"
+    "json-schema-ref-parser": "3.1.2"
   },
   "devDependencies": {
     "boom": "~4.2.0",
     "hapi": "^16.0.1",
     "istanbul": "~0.4.5",
-    "jshint": "^2.4.1",
     "standard": "8.6.0",
     "tape": "^4.6.3"
   },
