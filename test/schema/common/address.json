@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "title": "Address schema",
+  "properties": {
+    "line1": {
+      "type": "string",
+      "example": "81 Moss Road"
+    },
+    "line2": {
+      "type": "string",
+      "example": "Winnington"
+    },
+    "town": {
+      "type": "string",
+      "example": "Northwich"
+    },
+    "county": {
+      "type": "string",
+      "example": "Cheshire"
+    },
+    "postcode": {
+      "type": "string",
+      "example": "CW8 4BH"
+    }
+  },
+  "required": ["line1", "line2", "town", "county", "postcode"]
+}

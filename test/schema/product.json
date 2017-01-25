@@ -1,0 +1,58 @@
+{
+  "type": "object",
+  "links": [
+    {
+      "title": "Create",
+      "description": "Create a new product.",
+      "href": "/product",
+      "method": "POST",
+      "rel": "create",
+      "schema": {
+        "$patch": {
+          "source": { "$ref": "../db/product.json" },
+          "with": [
+            { "op": "remove", "path": "/properties/_id" },
+            { "op": "remove", "path": "/required/0" }
+          ]
+        }
+      },
+      "targetSchema": {
+        "$ref": "../db/product.json"
+      }
+    },
+    {
+      "description": "Update an existing product.",
+      "href": "/product/{productId}",
+      "method": "PUT",
+      "rel": "update",
+      "schema": {
+        "$ref": "../db/product.json"
+      },
+      "targetSchema": {
+        "$ref": "../db/product.json"
+      },
+      "title": "Update"
+    },
+    {
+      "description": "Delete an existing product.",
+      "href": "/product/{productId}",
+      "method": "DELETE",
+      "rel": "destroy",
+      "title": "Delete"
+    },
+    {
+      "description": "Info for existing product.",
+      "href": "/product/{productId}",
+      "method": "GET",
+      "rel": "self",
+      "title": "Info"
+    },
+    {
+      "description": "List existing product.",
+      "href": "/product",
+      "method": "GET",
+      "rel": "instances",
+      "title": "List"
+    }
+  ]
+}

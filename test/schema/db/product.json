@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "_id": { "$ref": "../common/id.json" },
+    "name": { "type": "string" },
+    "sku": { "type": "string" },
+    "price": { "type": "number", "minimum": 0 }
+  },
+  "additionalProperties": false,
+  "required": ["_id", "name", "sku", "price"]
+}

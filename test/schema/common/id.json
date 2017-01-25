@@ -1,0 +1,7 @@
+{
+  "type": "string",
+  "format": "uuid",
+  "title": "Core id",
+  "description": "Common id",
+  "example": "6438850b-b33d-475f-95d7-8997606431a5"
+}

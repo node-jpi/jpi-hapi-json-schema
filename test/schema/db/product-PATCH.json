@@ -1,0 +1,36 @@
+{
+  "type": "object",
+  "title": "Product schema",
+  "properties": {
+    "_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "sku": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": false,
+  "required": ["_id", "name", "sku", "price"]
+}
+
+
+PRODCUT ROUTE
+      "schema": {
+        "$patch": {
+          "source": {
+            "$ref": "../db/product.json"
+          },
+          "with": [
+            { "op": "remove", "path": "/properties/_id" },
+            { "op": "remove", "path": "/required/0" }
+          ]
+        }
+      }
+

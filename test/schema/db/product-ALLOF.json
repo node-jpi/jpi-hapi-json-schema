@@ -1,0 +1,14 @@
+{
+  "title": "Product schema",
+  "allOf": [
+    {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "../common/id.json" 
+        }
+      }
+    },
+    { "$ref": "../common/product.json" }
+  ]
+}

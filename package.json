@@ -1,39 +1,33 @@
 {
-  "name": "jpi-swaggerize-hapi",
-  "description": "Design-driven apis with swagger 2.0 and hapi.",
+  "name": "jpi-hapi-json-schema",
+  "description": "Design-driven apis with json schema hypermedia and hapi.",
   "version": "2.0.0",
-  "author": "Trevor Livingston <tlivings@gmail.com>",
+  "author": "David Stone <davidjamesstone@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git://github.com/krakenjs/swaggerize-hapi.git"
+    "url": "git://github.com/node-jpi/jpi-hapi-json-schema.git"
   },
-  "bugs": "http://github.com/krakenjs/swaggerize-hapi/issues",
+  "bugs": "http://github.com/node-jpi/jpi-hapi-json-schema/issues",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
-  "engines": {
-    "node": "4.x"
-  },
   "dependencies": {
     "ajv": "4.9.2",
-    "core-util-is": "^1.0.1",
-    "hoek": "^4.1.0",
-    "jpi-swaggerize-routes": "file:///Users/guest/Documents/dev/jpi/jpi-swaggerize-routes",
-    "js-yaml": "^3.2.6",
+    "boom": "4.2.0",
+    "jpi-uri-template": "file:///Users/guest/Documents/dev/jpi/jpi-uri-template",
     "json-schema-ref-parser": "3.1.2"
   },
   "devDependencies": {
-    "boom": "~4.2.0",
-    "hapi": "^16.0.1",
-    "istanbul": "~0.4.5",
-    "standard": "8.6.0",
-    "tape": "^4.6.3"
+    "code": "4.0.0",
+    "hapi": "16.1.0",
+    "lab": "11.2.1",
+    "standard": "8.6.0"
   },
   "scripts": {
-    "test": "tape test/*.js",
+    "test": "lab test/*.js",
     "cover": "istanbul cover tape -- test/*.js",
     "lint": "standard lib/*.js"
   },
-  "license": "Apache-2.0",
-  "main": "./lib/index"
+  "license": "MIT",
+  "main": "index.js"
 }

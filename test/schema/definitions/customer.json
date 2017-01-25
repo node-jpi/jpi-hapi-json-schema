@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "title": "Customer schema",
+  "properties": {
+    "id": { "$ref": "../common/id.json" },
+    "name": {
+      "type": "string",
+      "example": "Customer name"
+    },
+    "age": {
+      "type": "integer",
+      "minimum": 0,
+      "example": 27
+    },
+    "shipTo": {
+      "$ref": "../common/address.json"
+    },
+    "billTo": {
+      "$ref": "../common/address.json"
+    }
+  },
+  "required": ["id", "name", "age", "shipTo", "billTo"],
+  "additionalProperties": false
+}

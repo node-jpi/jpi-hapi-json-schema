@@ -1,0 +1,61 @@
+{
+  "type": "object",
+  "title": "Blog API",
+  "description": "Blog API description",
+  "definitions": {
+    "id": {
+      "type": "string",
+      "description": "Product SKU",
+      "example": "ABC-123"
+    },
+    "blogId": {
+      "type": "string",
+      "description": "Product SKU",
+      "example": "ABC-123"
+    }
+  },
+  "properties": {
+    "id": { "$ref": "../common/id.json" },
+    "name": {
+      "type": "string",
+      "example": "Blog name"
+    },
+    "age": {
+      "type": "integer",
+      "minimum": 0,
+      "example": 27
+    }
+  },
+  "required": ["id", "name", "age"],
+  "additionalProperties": false,
+  "links": [
+    {
+      "description": "Blog post info for existing blog.",
+      "href": "/blog",
+      "method": "GET",
+      "rel": "self",
+      "title": "Info",
+      "targetSchema": {
+        "rel": "self"
+      }
+    },
+    {
+      "title": "Create",
+      "description": "Create a new blog post.",
+      "href": "/blog",
+      "method": "POST",
+      "rel": "create",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "name": { "$ref": "#/properties/name" },
+          "age": { "$ref": "#/properties/age" }
+        },
+        "required": ["name", "age"]
+      },
+      "targetSchema": {
+        "rel": "self"
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "title": "Customer schema",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "basketId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "customerId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "total": {
+      "type": "number",
+      "minimum": 0
+    },
+    "shipTo": {
+      "$ref": "common/address.json"
+    },
+    "billTo": {
+      "$ref": "common/address.json"
+    }
+  },
+  "required": ["id", "basketId", "customerId", "total", "shipTo", "billTo"]
+}

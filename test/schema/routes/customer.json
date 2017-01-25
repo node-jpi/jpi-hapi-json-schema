@@ -1,0 +1,113 @@
+{
+  "type": "object",
+  "title": "Customer API Hyperschema",
+  "description": "Customer API description",
+  "definitions": {
+    "identifier": {
+      "type": "integer",
+      "description": "Product SKU",
+      "example": 123
+    },
+    "orderBy": {
+      "type": "string",
+      "description": "Order by query",
+      "example": "price",
+      "enum": ["price", "distance", "postage"]
+    }
+  },
+  "links": [
+    {
+      "title": "Create",
+      "description": "Create a new customer.",
+      "href": "/customer",
+      "method": "POST",
+      "rel": "create",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "name": { "$ref": "#/properties/name" },
+          "age": { "$ref": "#/properties/age" }
+        },
+        "required": ["name", "age"]
+      },
+      "targetSchema": {
+        "rel": "self"
+      },
+      "required": ["name", "age"]
+    },
+    {
+      "title": "Update",
+      "description": "Update a customer.",
+      "href": "/customer/{id}",
+      "method": "PUT",
+      "rel": "update",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": { "$ref": "#/properties/id" },
+          "name": { "$ref": "#/properties/name" },
+          "age": { "$ref": "#/properties/age" }
+        }
+      },
+      "targetSchema": {
+        "rel": "self"
+      },
+      "required": ["id", "name", "age"]
+    },
+    {
+      "description": "Info for existing customer.",
+      "href": "/customer/{#/definitions/identifier}",
+      "method": "GET",
+      "rel": "self",
+      "title": "Info",
+      "targetSchema": {
+        "rel": "self"
+      }
+    },
+    {
+      "description": "Info for existing customer.",
+      "href": "/customer/{#/definitions/identifier}/orders?{#/definitions/orderBy}",
+      "method": "GET",
+      "rel": "self",
+      "title": "Info",
+      "targetSchema": {
+        "rel": {
+          "rel": "self"
+        }
+      }
+    },
+    {
+      "description": "Info for existing customer.",
+      "href": "/customer",
+      "method": "GET",
+      "rel": "self",
+      "title": "Info",
+      "targetSchema": {
+        "rel": {
+          "rel": "self"
+        }
+      }
+    }
+  ],
+  "properties": {
+    "id": { "$ref": "../common/id.json" },
+    "name": {
+      "type": "string",
+      "example": "Customer name"
+    },
+    "age": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 130,
+      "example": 27
+    },
+    "shipTo": {
+      "$ref": "../common/address.json"
+    },
+    "billTo": {
+      "$ref": "../common/address.json"
+    }
+  },
+  "required": ["id", "name", "age", "shipTo", "billTo"],
+  "additionalProperties": false
+}
