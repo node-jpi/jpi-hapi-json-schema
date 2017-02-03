@@ -1,7 +1,7 @@
 {
   "name": "jpi-hapi-json-schema",
   "description": "Design-driven apis with json schema hypermedia and hapi.",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "author": "David Stone <davidjamesstone@gmail.com>",
   "repository": {
     "type": "git",
@@ -12,15 +12,15 @@
     "registry": "https://registry.npmjs.org"
   },
   "dependencies": {
-    "ajv": "4.9.2",
     "boom": "4.2.0",
-    "jpi-uri-template": "file:///Users/guest/Documents/dev/jpi/jpi-uri-template",
+    "is-my-json-valid": "2.15.0",
+    "jpi-uri-template": "git+https://github.com/node-jpi/jpi-uri-template.git",
     "json-schema-ref-parser": "3.1.2"
   },
   "devDependencies": {
     "code": "4.0.0",
     "hapi": "16.1.0",
-    "lab": "11.2.1",
+    "lab": "12.1.0",
     "standard": "8.6.0"
   },
   "scripts": {

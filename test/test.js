@@ -14,14 +14,24 @@ const composeServer = function (callback) {
       {
         register: require('..'),
         options: {
-          schema: Path.resolve(__dirname, 'schema/routes/customer.json')
+          schema: Path.resolve(__dirname, 'schema/routes/customer.json'),
+          prepareRouteOptions: function (options, file, schema, link) {
+            options.config.handler = function (request, reply) {
+              reply({ok: 200})
+            }
+          }
         },
         select: 'www'
       },
       {
         register: require('..'),
         options: {
-          schema: Path.resolve(__dirname, 'schema/routes/blog.json')
+          schema: Path.resolve(__dirname, 'schema/routes/blog.json'),
+          prepareRouteOptions: function (options, file, schema, link) {
+            options.config.handler = function (request, reply) {
+              reply({ok: 200})
+            }
+          }
         },
         select: 'api'
       }
@@ -54,10 +64,14 @@ lab.experiment('buy', function () {
   })
 
   lab.test('server routing table', (done) => {
-    const table = server.table()[0].table
-    expect(table.length).to.equal(table.length)
+    const table = server.table()
+    expect(table.length).to.equal(2)
 
-    console.log(table.map(item => item.path))
+    table.forEach(function (table) {
+      console.log('Server started at: ' + table.info.uri)
+      console.log('Labels: ' + table.labels)
+      console.log(table.table.map(item => item.method.toUpperCase() + ' ' + item.path))
+    })
     // expect(table[0].method).to.equal('get')
     // expect(table[0].path).to.equal('/')
 
@@ -144,8 +158,8 @@ lab.experiment('buy', function () {
       expect(payload.validation).to.be.an.object()
       expect(payload.validation.source).to.be.a.string().and.equal('payload')
       expect(payload.details).to.be.an.array().and.have.length(1)
-      expect(payload.details[0].dataPath).to.equal('')
-      expect(payload.details[0].message).to.equal('should be object')
+      expect(payload.details[0].field).to.equal('data')
+      expect(payload.details[0].message).to.equal('is the wrong type')
       server.stop(done)
     })
   })
@@ -166,8 +180,8 @@ lab.experiment('buy', function () {
       expect(payload.validation).to.be.an.object()
       expect(payload.validation.source).to.be.a.string().and.equal('payload')
       expect(payload.details).to.be.an.array().and.have.length(1)
-      expect(payload.details[0].dataPath).to.equal('')
-      expect(payload.details[0].message).to.equal('should have required property \'age\'')
+      expect(payload.details[0].field).to.equal('data.age')
+      expect(payload.details[0].message).to.equal('is required')
       server.stop(done)
     })
   })
@@ -188,8 +202,8 @@ lab.experiment('buy', function () {
       expect(payload.validation).to.be.an.object()
       expect(payload.validation.source).to.be.a.string().and.equal('payload')
       expect(payload.details).to.be.an.array().and.have.length(1)
-      expect(payload.details[0].dataPath).to.equal('')
-      expect(payload.details[0].message).to.equal('should have required property \'name\'')
+      expect(payload.details[0].field).to.equal('data.name')
+      expect(payload.details[0].message).to.equal('is required')
       server.stop(done)
     })
   })
@@ -211,8 +225,8 @@ lab.experiment('buy', function () {
       expect(payload.validation).to.be.an.object()
       expect(payload.validation.source).to.be.a.string().and.equal('payload')
       expect(payload.details).to.be.an.array().and.have.length(1)
-      expect(payload.details[0].dataPath).to.equal('.age')
-      expect(payload.details[0].message).to.equal('should be >= 0')
+      expect(payload.details[0].field).to.equal('data.age')
+      expect(payload.details[0].message).to.equal('is less than minimum')
       server.stop(done)
     })
   })
@@ -234,10 +248,10 @@ lab.experiment('buy', function () {
       expect(payload.validation).to.be.an.object()
       expect(payload.validation.source).to.be.a.string().and.equal('payload')
       expect(payload.details).to.be.an.array().and.have.length(2)
-      expect(payload.details[0].dataPath).to.equal('')
-      expect(payload.details[0].message).to.equal('should have required property \'name\'')
-      expect(payload.details[1].dataPath).to.equal('.age')
-      expect(payload.details[1].message).to.equal('should be >= 0')
+      expect(payload.details[0].field).to.equal('data.name')
+      expect(payload.details[0].message).to.equal('is required')
+      expect(payload.details[1].field).to.equal('data.age')
+      expect(payload.details[1].message).to.equal('is less than minimum')
       server.stop(done)
     })
   })

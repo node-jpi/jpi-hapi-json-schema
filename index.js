@@ -3,15 +3,20 @@
 const Glob = require('glob')
 const Boom = require('boom')
 const parser = require('json-schema-ref-parser')
+const validator = require('is-my-json-valid')
 const parseHref = require('jpi-uri-template')
-const Ajv = require('ajv')
 const pkg = require('./package')
 const helper = require('./lib/validator')
-const ajv = new Ajv({ allErrors: true, v5: true }) // options can be passed, e.g. { allErrors: true }
 const name = 'jpi-hapi-json-schema'
+const validatorOptions = {
+  greedy: true,
+  formats: {
+    uuid: /^(?:urn\:uuid\:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i 
+  }
+}
 
 module.exports.register = function (server, options, next) {
-  let makeHandler = options.makeHandler
+  const prepareRouteOptions = options.prepareRouteOptions
 
   Glob(options.schema, function (err, files) {
     if (err) {
@@ -19,20 +24,20 @@ module.exports.register = function (server, options, next) {
       return next(err)
     }
 
-    Promise.all(files.map(f => parser.dereference(f, { dereference: { circular: 'ignore' } }))).then(values => {
+    Promise.all(files.map(f => parser.dereference(f))).then(values => {
       values.forEach(function (schema, index) {
         server.route(schema.links.map(link => {
           /**
            * Build validations for params, query, payload and response
            */
-          let validate = {}
-          let href = parseHref(link.href, schema)
+          const validate = {}
+          const href = parseHref(link.href, schema)
 
           if (href.matches.length) {
             // Params
-            let params = href.matches.filter(m => m.type === 'param')
+            const params = href.matches.filter(m => m.type === 'param')
             if (params.length) {
-              let paramsSchema = {
+              const paramsSchema = {
                 type: 'object',
                 properties: {}
               }
@@ -40,10 +45,12 @@ module.exports.register = function (server, options, next) {
               params.forEach(p => {
                 paramsSchema.properties[p.key] = p.definition
               })
-              let paramsValidator = ajv.compile(paramsSchema)
+
+              const paramsValidator = validator(paramsSchema, validatorOptions)
+              // const paramsValidator = ajv.compile(paramsSchema)
 
               validate.params = function validateParams (value, options, next) {
-                var result = helper.validateParams(paramsSchema, paramsValidator, value, options.context.headers)
+                const result = helper.validateParams(paramsSchema, paramsValidator, value, options.context.headers)
 
                 if (result.valid) {
                   next(null, value)
@@ -56,19 +63,21 @@ module.exports.register = function (server, options, next) {
             }
 
             // Query
-            let query = href.matches.filter(m => m.type === 'query')
+            const query = href.matches.filter(m => m.type === 'query')
             if (query.length) {
-              let querySchema = {
+              const querySchema = {
                 type: 'object',
                 properties: {}
               }
               query.forEach(p => {
                 querySchema.properties[p.key] = p.definition
               })
-              let queryValidator = ajv.compile(querySchema)
+
+              const queryValidator = validator(querySchema, validatorOptions)
+              // const queryValidator = ajv.compile(querySchema)
 
               validate.query = function validateQuery (value, options, next) {
-                var result = helper.validateQuery(querySchema, queryValidator, value, options.context.headers)
+                const result = helper.validateQuery(querySchema, queryValidator, value, options.context.headers)
 
                 if (result.valid) {
                   next(null, value)
@@ -84,10 +93,15 @@ module.exports.register = function (server, options, next) {
           // Payload
           if (link.schema) {
             let payloadSchema = link.schema
-            let payloadValidator = ajv.compile(payloadSchema)
+            if (payloadSchema.$ref === '#') {
+              payloadSchema = schema
+            }
+
+            const payloadValidator = validator(payloadSchema, validatorOptions)
+            // const payloadValidator = ajv.compile(payloadSchema)
 
             validate.payload = function validatePayload (value, options, next) {
-              var result = helper.validatePayload(payloadSchema, payloadValidator, value, options.context.headers)
+              const result = helper.validatePayload(payloadSchema, payloadValidator, value, options.context.headers)
 
               if (result.valid) {
                 next(null, value)
@@ -99,26 +113,25 @@ module.exports.register = function (server, options, next) {
             }
           }
 
-          var path = href.path
-          
-          let config = {
+          const path = href.path
+
+          const routeOptions = {
             path: path,
             method: link.method,
             config: {
               description: link.description,
-              // handler: require('../routes/' + fileName)[link.rel].handler
-              handler: makeHandler(files[index], schema, link),
               validate: validate
             }
           }
 
+          prepareRouteOptions(routeOptions, files[index], schema, link)
           // if (link.targetSchema) {
-          //   let responseSchema = link.targetSchema
-          //   let responseValidator = ajv.compile(responseSchema)
+          //   const responseSchema = link.targetSchema
+          //   const responseValidator = ajv.compile(responseSchema)
 
           //   config.config.response = {
           //     schema: function validateResponse (value, options, next) {
-          //       var result = helper.validatePayload(responseSchema, responseValidator, value, options.context.headers)
+          //       const result = helper.validatePayload(responseSchema, responseValidator, value, options.context.headers)
 
           //       if (result.valid) {
           //         next(null, value)
@@ -131,7 +144,7 @@ module.exports.register = function (server, options, next) {
           //   }
           // }
 
-          return config
+          return routeOptions
         }))
       })
 
@@ -142,7 +155,6 @@ module.exports.register = function (server, options, next) {
     })
   })
 }
-
 
 module.exports.register.attributes = {
   name: name,
