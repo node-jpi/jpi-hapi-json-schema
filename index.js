@@ -11,7 +11,8 @@ const name = 'jpi-hapi-json-schema'
 const validatorOptions = {
   greedy: true,
   formats: {
-    uuid: /^(?:urn\:uuid\:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i 
+    uuid: /^(?:urn:uuid:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i,
+    objectid: /^[a-f\d]{24}$/i
   }
 }
 
@@ -39,11 +40,13 @@ module.exports.register = function (server, options, next) {
             if (params.length) {
               const paramsSchema = {
                 type: 'object',
-                properties: {}
+                properties: {},
+                required: []
               }
 
               params.forEach(p => {
                 paramsSchema.properties[p.key] = p.definition
+                paramsSchema.required.push(p.key)
               })
 
               const paramsValidator = validator(paramsSchema, validatorOptions)
@@ -67,10 +70,12 @@ module.exports.register = function (server, options, next) {
             if (query.length) {
               const querySchema = {
                 type: 'object',
-                properties: {}
+                properties: {},
+                required: []
               }
               query.forEach(p => {
                 querySchema.properties[p.key] = p.definition
+                querySchema.required.push(p.key)
               })
 
               const queryValidator = validator(querySchema, validatorOptions)
